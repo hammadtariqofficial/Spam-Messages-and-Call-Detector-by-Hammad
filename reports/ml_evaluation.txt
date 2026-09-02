@@ -1,0 +1,8 @@
+Industrial ML Evaluation
+Dataset: 1930 rows
+Train: 1238 | Validation: 318 | Test: 374
+Validation: {'accuracy': 0.9969, 'precision_spam': 0.9937, 'recall_spam': 1.0, 'f1_spam': 0.9968}
+Test: {'accuracy': 0.9973, 'precision_spam': 0.9935, 'recall_spam': 1.0, 'f1_spam': 0.9967}
+Confusion matrix [normal,spam]: [[220, 1], [0, 153]]
+
+IMPORTANT: synthetic/template-generated data is included; metrics are not proof of production accuracy.

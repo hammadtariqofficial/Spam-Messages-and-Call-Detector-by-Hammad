@@ -1,0 +1,65 @@
+{
+  "dataset_rows": 1930,
+  "class_counts": {
+    "1": 920,
+    "0": 1010
+  },
+  "split_rows": {
+    "train": 1238,
+    "validation": 318,
+    "test": 374
+  },
+  "grouped_split": true,
+  "seed": 42,
+  "model": "word+character TF-IDF + Logistic Regression",
+  "validation": {
+    "accuracy": 0.9969,
+    "precision_spam": 0.9937,
+    "recall_spam": 1.0,
+    "f1_spam": 0.9968
+  },
+  "test": {
+    "accuracy": 0.9973,
+    "precision_spam": 0.9935,
+    "recall_spam": 1.0,
+    "f1_spam": 0.9967
+  },
+  "test_confusion_matrix_labels_0_normal_1_spam": [
+    [
+      220,
+      1
+    ],
+    [
+      0,
+      153
+    ]
+  ],
+  "classification_report": {
+    "normal": {
+      "precision": 1.0,
+      "recall": 0.995475113122172,
+      "f1-score": 0.9977324263038548,
+      "support": 221.0
+    },
+    "spam": {
+      "precision": 0.9935064935064936,
+      "recall": 1.0,
+      "f1-score": 0.996742671009772,
+      "support": 153.0
+    },
+    "accuracy": 0.9973262032085561,
+    "macro avg": {
+      "precision": 0.9967532467532467,
+      "recall": 0.997737556561086,
+      "f1-score": 0.9972375486568135,
+      "support": 374.0
+    },
+    "weighted avg": {
+      "precision": 0.9973435655253836,
+      "recall": 0.9973262032085561,
+      "f1-score": 0.997327526410821,
+      "support": 374.0
+    }
+  },
+  "note": "Dataset contains curated baseline examples plus synthetic/template-generated examples. Treat these metrics as engineering validation, not a benchmark of real-world production performance."
+}
