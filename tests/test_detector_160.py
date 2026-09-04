@@ -71,7 +71,51 @@ SUSPICIOUS=[
  'The account request should be confirmed with support.', 'Please check the payment reference before approving it.'
 ]
 CASES=[('NORMAL',x,'') for x in NORMAL]+[('SPAM',x,'') for x in SPAM]+[('SUSPICIOUS',x,'Unknown') for x in SUSPICIOUS]
-assert len(CASES)>=120
+
+# Additional regression coverage: multilingual-style Roman Urdu/Hinglish and
+# realistic hard negatives. These are intentionally deterministic and do not
+# claim to represent a production benchmark.
+NORMAL_EXTRA=[
+ 'Kal class 9 baje hai, report le ana.', 'Bhai meeting 5 baje confirm hai.',
+ 'Please send the assignment file to our group.', 'Aaj library mein study karte hain.',
+ 'Teacher ne kaha report Friday se pehle submit karni hai.', 'I will call you after the lecture.',
+ 'Office ka invoice accounting team ko bhej diya hai.', 'Courier ka official tracking number spreadsheet mein hai.',
+ 'Our bank statement is needed for the accounting report.', 'Please update the presentation figures before submission.',
+ 'Congratulations on completing your college project.', 'Prize ceremony will start after lunch at college.'
+]
+SPAM_EXTRA=[
+ 'URGENT verify your bank account and enter OTP using this link now.',
+ 'You won a free cash reward, click to claim immediately.',
+ 'Final warning your card is blocked, confirm your password now.',
+ 'Exclusive voucher winner, call now and pay the processing fee.',
+ 'Your account will be suspended, click the link and send your passcode.',
+ 'Guaranteed investment profit, transfer the release fee immediately.',
+ 'Free gift waiting, open this link and claim your reward today.',
+ 'Lottery jackpot winner selected, call now to receive cash.',
+ 'Payment failed, update card details through this link immediately.',
+ 'Urgent security alert, verify credentials and OTP to unlock account.',
+ 'Congratulations you won a prize, claim the cash reward before midnight.',
+ 'Loan approved, pay the fee now to release your funds.'
+]
+SUSPICIOUS_EXTRA=[
+ 'Please verify the invoice with the vendor before payment.',
+ 'Can you confirm the delivery address with the carrier?',
+ 'Please check the official account portal before responding.',
+ 'The registration request needs confirmation from the organizer.',
+ 'Please verify the payment reference with the finance team.',
+ 'Can you confirm the shipment status with the official carrier?',
+ 'Please check the login notification with your IT administrator.',
+ 'The vendor asked for confirmation of the invoice details.',
+ 'Please verify the booking request through the official office number.',
+ 'Can you check the account request with support before proceeding?',
+ 'Please confirm the package tracking information with the courier.',
+ 'The office needs verification of the expense receipt.'
+]
+CASES += [('NORMAL',x,'') for x in NORMAL_EXTRA]
+CASES += [('SPAM',x,'') for x in SPAM_EXTRA]
+CASES += [('SUSPICIOUS',x,'Unknown') for x in SUSPICIOUS_EXTRA]
+
+assert len(CASES)>=160
 D=SpamDetector(); failures=[]
 for i,(expected,text,sender) in enumerate(CASES,1):
     r=D.analyze(text,sender)
