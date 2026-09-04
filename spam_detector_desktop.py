@@ -100,8 +100,16 @@ class App(tk.Tk):
         self.meta=tk.Label(right,text="ML probability: —\nRule indicators: —",bg=PANEL,fg=MUTED,justify="left",font=("Segoe UI",10)); self.meta.pack(anchor="w",padx=22)
         tk.Label(right,text="WHY THIS RESULT",bg=PANEL,fg=WHITE,font=("Segoe UI",10,"bold")).pack(anchor="w",padx=22,pady=(22,6))
         self.reasons=tk.Text(right,height=6,bg="#0B1220",fg=WHITE,relief="flat",font=("Segoe UI",10),wrap="word"); self.reasons.pack(fill="x",padx=22)
-        tk.Label(right,text="SAFETY RECOMMENDATION",bg=PANEL,fg=WHITE,font=("Segoe UI",10,"bold")).pack(anchor="w",padx=22,pady=(14,4))
-        self.rec=tk.Label(right,text="Analyze a message to receive guidance.",bg=PANEL,fg=MUTED,justify="left",anchor="nw",wraplength=350,font=("Segoe UI",10)); self.rec.pack(fill="x",anchor="w",padx=22,pady=(0,18))
+        tk.Label(right,text="SAFETY RECOMMENDATION",bg=PANEL,fg=WHITE,font=("Segoe UI",10,"bold")).pack(anchor="w",padx=22,pady=(10,3))
+        rec_frame=tk.Frame(right,bg="#0B1220"); rec_frame.pack(fill="x",padx=22,pady=(0,12))
+        self.rec=tk.Text(rec_frame,height=3,bg="#0B1220",fg=MUTED,relief="flat",font=("Segoe UI",10),wrap="word",
+                         padx=8,pady=6,highlightthickness=0,borderwidth=0)
+        self.rec.pack(side="left",fill="both",expand=True)
+        rec_scroll=ttk.Scrollbar(rec_frame,orient="vertical",command=self.rec.yview)
+        rec_scroll.pack(side="right",fill="y")
+        self.rec.configure(yscrollcommand=rec_scroll.set)
+        self.rec.insert("1.0","Analyze a message to receive guidance.")
+        self.rec.configure(state="disabled")
 
     def analyze(self):
         try:
@@ -116,14 +124,21 @@ class App(tk.Tk):
         self.meta.config(text=f'ML probability: {r["ml_probability"]:.2f}%\nRule indicators: {r["rule_score"]:.0f}/100')
         self.reasons.delete("1.0","end")
         for x in r["reasons"]: self.reasons.insert("end","• "+x+"\n")
-        self.rec.config(text=r["recommendation"],fg=WHITE)
+        self.rec.config(state="normal",fg=WHITE)
+        self.rec.delete("1.0","end")
+        self.rec.insert("1.0",r["recommendation"])
+        self.rec.config(state="disabled")
         self._refresh_dashboard(); self._refresh_history()
 
     def clear(self):
         self.sender.delete(0,"end"); self.text.delete("1.0","end")
         self.result_badge.config(text="WAITING",bg="#334155"); self.risk.config(text="—"); self.bar["value"]=0
         self.meta.config(text="ML probability: —\nRule indicators: —"); self.reasons.delete("1.0","end")
-        self.rec.config(text="Analyze a message to receive guidance.",fg=MUTED); self.last_result=None
+        self.rec.config(state="normal",fg=MUTED)
+        self.rec.delete("1.0","end")
+        self.rec.insert("1.0","Analyze a message to receive guidance.")
+        self.rec.config(state="disabled")
+        self.last_result=None
 
     def export_result(self):
         if not self.last_result: messagebox.showinfo("Nothing to export","Analyze a message first."); return
