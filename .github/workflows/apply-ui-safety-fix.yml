@@ -1,0 +1,32 @@
+name: Apply UI Safety Fix
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-ui:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Apply fix
+        run: python tools/apply_ui_safety_fix.py
+
+      - name: Commit updated UI
+        run: |
+          if git diff --quiet -- spam_detector_desktop.py; then
+            echo "UI already fixed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add spam_detector_desktop.py
+          git commit -m "Fix Safety Recommendation UI clipping"
+          git push
