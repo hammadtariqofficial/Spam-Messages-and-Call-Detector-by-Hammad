@@ -8,7 +8,6 @@
 - Added safer live-device validation and clearer live-mode failure messages.
 - Added stronger export error handling for inaccessible/read-only destinations.
 - Added vertical and horizontal scrollbars to detection reasons and scan history to prevent UI clipping on smaller windows.
-- Fixed the Analyze-panel Safety Recommendation area: it now uses a dedicated scrollable text panel so long recommendations remain fully visible instead of being clipped at the bottom of the window.
 - Corrected detector import ordering and removed an unused CSV import.
 - Clarified offline operation: text analysis is offline; external live speech recognition may require internet.
 
@@ -24,7 +23,7 @@
 - Smoke tests: passed.
 - Headless Tkinter GUI smoke test: passed at 1180x760.
 - Model loading: passed.
-- Optional audio dependencies absent in the Linux environment: application remains usable for text analysis.
+- Optional audio dependencies absent in this Linux environment: application remains usable for text analysis.
 
 ### Release note
-A native Windows EXE still requires a Windows 10/11 x64 build and runtime smoke test. The Linux development environment cannot execute a Windows binary, so the Windows build script is validated but the native EXE runtime itself is not claimed as tested here.
+A native Windows EXE still requires a Windows 10/11 x64 build and runtime smoke test. This Linux environment cannot execute a Windows binary, so the Windows build script is validated but the native EXE runtime itself is not claimed as tested here.
