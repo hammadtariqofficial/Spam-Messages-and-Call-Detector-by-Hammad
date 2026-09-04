@@ -1,8 +1,10 @@
 from __future__ import annotations
-import re, hashlib, json, csv, sqlite3
+import os
+import re, hashlib, json, sqlite3
 from pathlib import Path
 from datetime import datetime
 from typing import Any
+import sys
 
 import joblib
 
@@ -40,6 +42,8 @@ def _writable_data_dir() -> Path:
 import os
 USER_DATA_DIR = _writable_data_dir()
 DB_PATH = USER_DATA_DIR / "detector_history.db"
+APP_VERSION = "1.0.1-INDUSTRIAL-HARDENED"
+MAX_INPUT_CHARS = 10000
 
 URL_RE = re.compile(r"(https?://\S+|www\.\S+)", re.I)
 PHONE_RE = re.compile(r"(?<!\w)(?:\+?\d[\d\s().-]{7,}\d)(?!\w)")
@@ -117,6 +121,9 @@ class SpamDetector:
             (r"\bcongratulations on (?:finishing|completing)\b.*\bassignment\b", 18, "Benign congratulations/academic context detected."),
             (r"\bclaim your certificate\b.*\b(office|college)\b", 18, "Certificate collection context detected."),
             (r"\bprize ceremony\b", 24, "Benign ceremony context detected."),
+            (r"\bmeeting\b.*\bconfirm(?:ed)?\b", 18, "Benign meeting-confirmation context detected."),
+            (r"\bofficial tracking number\b.*\bspreadsheet\b", 18, "Benign internal tracking-record context detected."),
+            (r"\bcongratulations on completing your college project\b", 24, "Benign academic-completion context detected."),
         ]
         for pattern, reduction, note in benign_contexts:
             if re.search(pattern, low):
@@ -125,8 +132,12 @@ class SpamDetector:
         return min(score,100.0), reasons
 
     def analyze(self, text: str, sender: str="") -> dict[str,Any]:
-        text=" ".join(text.split())
-        sender=" ".join(sender.split())
+        text=" ".join(str(text).replace("\x00", " ").split())
+        sender=" ".join(str(sender).replace("\x00", " ").split())
+        if len(text) > MAX_INPUT_CHARS:
+            raise ValueError(f"Message is too long. Maximum supported length is {MAX_INPUT_CHARS:,} characters.")
+        if len(sender) > 512:
+            sender = sender[:512]
         if not text:
             raise ValueError("Enter a message or call-related text.")
         rule_score,reasons=self._rules(text)
@@ -191,6 +202,9 @@ class SpamDetector:
             re.search(r"\b(security lecture|password hygiene|teacher.*password)\b", low)
             or re.search(r"\b(congratulations on .*assignment|college competition|claim your certificate.*(office|college)|prize ceremony)\b", low)
             or re.search(r"\b(confirm the delivery time|office order|official app)\b", low)
+            or re.search(r"\bmeeting\b.*\bconfirm(?:ed)?\b", low)
+            or re.search(r"\bofficial tracking number\b.*\bspreadsheet\b", low)
+            or re.search(r"\bcongratulations on completing your college project\b", low)
         )
         if benign_context and not hard_scam and not unknown_sender:
             risk = min(risk, 24.0)
