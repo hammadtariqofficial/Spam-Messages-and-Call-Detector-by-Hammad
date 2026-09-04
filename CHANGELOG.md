@@ -1,24 +1,30 @@
-# Changelog
+# CHANGELOG
 
 ## 1.0.1-INDUSTRIAL-HARDENED — 2026-09-04
 
-- Hardened Windows/PyInstaller resource and writable-data handling.
-- Added safer per-user history storage and diagnostics logging.
-- Improved spam/scam rule combinations and explainable reasons.
-- Added benign hard-negative contexts to reduce false positives.
-- Added input normalization and safety limits.
-- Hardened optional live-call/audio behavior for missing dependencies/devices.
-- Added reproducible ML dataset/training pipeline and holdout evaluation.
-- Added 160 deterministic end-to-end regression tests.
-- Added model card, technical specification, release checklist and QA report.
-- Updated README and release documentation.
-- Repository hygiene improved so local environments, databases, logs and build artifacts are not committed.
+### Bugs fixed
+- Fixed optional SpeechRecognition/SoundCard initialization so a missing audio stack no longer crashes the desktop application.
+- Fixed Windows PC system-audio capture path to resolve loopback microphone sources rather than attempting to record directly from a speaker object.
+- Added safer live-device validation and clearer live-mode failure messages.
+- Added stronger export error handling for inaccessible/read-only destinations.
+- Added vertical and horizontal scrollbars to detection reasons and scan history to prevent UI clipping on smaller windows.
+- Fixed the Analyze-panel Safety Recommendation area: it now uses a dedicated scrollable text panel so long recommendations remain fully visible instead of being clipped at the bottom of the window.
+- Corrected detector import ordering and removed an unused CSV import.
+- Clarified offline operation: text analysis is offline; external live speech recognition may require internet.
 
 ### Validation
+- Dataset regeneration: 1,930 labelled rows.
+- Grouped holdout test: 374 samples.
+- Accuracy: 99.73%.
+- Spam precision: 99.35%.
+- Spam recall: 100%.
+- Spam F1: 99.67%.
+- Deterministic detector tests: 160/160 passed.
+- Final verification: passed.
+- Smoke tests: passed.
+- Headless Tkinter GUI smoke test: passed at 1180x760.
+- Model loading: passed.
+- Optional audio dependencies absent in the Linux environment: application remains usable for text analysis.
 
-- Holdout test accuracy: 99.73%
-- Spam precision: 99.35%
-- Spam recall: 100%
-- Regression tests: 160/160 passed
-
-> Metrics are engineering validation on the supplied expanded dataset, which contains synthetic/template-generated examples. They are not a guarantee of production accuracy.
+### Release note
+A native Windows EXE still requires a Windows 10/11 x64 build and runtime smoke test. The Linux development environment cannot execute a Windows binary, so the Windows build script is validated but the native EXE runtime itself is not claimed as tested here.
