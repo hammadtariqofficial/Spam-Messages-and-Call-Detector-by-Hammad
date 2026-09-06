@@ -1,13 +1,27 @@
-.venv/
+# Python
 __pycache__/
 *.py[cod]
 *.pyo
+.pytest_cache/
+.venv/
+
+# Local runtime data
+*.db
+*.db-wal
+*.db-shm
+data_store/
+
+# Build artifacts
 build/
 dist/
 release/
-data_store/
-*.db
+*.spec~
+
+# Logs / diagnostics
 *.log
+reports/*.json
+
+# Local secrets
 .env
-*.key
-*.pem
+.env.*
+!.env.example
