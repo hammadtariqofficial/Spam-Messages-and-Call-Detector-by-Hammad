@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## 2.1.1 — 2026-09-06
+
+### PyInstaller build fix
+- Replaced broad `collect_submodules sklearn` and `collect_all google.genai` packaging with a focused `SpamMessageCallDetector.spec`.
+- Excluded optional third-party test/development modules that caused the reported missing-submodule warnings.
+- Builder now uses the spec directly and writes the final EXE as `Spam Messages and Call Detector.exe`.
+- Updated build documentation and project ignore rules.
+- Kept Gemini optional and out of source-controlled secrets.
+
+### Validation
+- Python compilation: PASS.
+- Final verification: PASS.
+- Smoke tests: PASS.
+- Detector regression: 160/160 PASS.
+- Edge cases: 20/20 PASS.
+- Gemini offline test: PASS.
+- Tkinter UI smoke test under Xvfb: PASS.
+- Hardcoded-secret scan: PASS.
+- `shell=True` scan: PASS.
+- TODO/FIXME scan: PASS.
+- Windows PyInstaller build: NOT TESTED — Windows runtime required.
+
 ## 1.0.1-INDUSTRIAL-HARDENED — 2026-09-04
 
 ### Bugs fixed
