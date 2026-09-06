@@ -1,32 +1,69 @@
 # -*- mode: python ; coding: utf-8 -*-
+"""Focused PyInstaller spec for Spam Messages and Call Detector.
+
+The previous build recursively collected large third-party package trees.
+That pulled optional test/development modules and produced missing-submodule
+warnings. This spec keeps the runtime dependency set explicit.
+"""
 from PyInstaller.utils.hooks import collect_data_files
-from PyInstaller.utils.hooks import collect_submodules
-from PyInstaller.utils.hooks import collect_all
 
-datas = [('models', 'models'), ('data', 'data')]
-binaries = []
-hiddenimports = ['joblib', 'speech_recognition', 'soundcard', 'numpy', 'sklearn', 'sklearn.feature_extraction.text', 'sklearn.linear_model', 'sklearn.preprocessing']
-datas += collect_data_files('sklearn')
-hiddenimports += collect_submodules('sklearn')
-tmp_ret = collect_all('soundcard')
-datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
-tmp_ret = collect_all('speech_recognition')
-datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+APP_NAME = "Spam Messages and Call Detector"
 
+datas = [
+    ("models", "models"),
+    ("data", "data"),
+]
+# Runtime package data only; do not recursively collect google.genai tests.
+datas += collect_data_files("google.genai", includes=["*.json", "*.txt"])
+
+hiddenimports = [
+    "joblib",
+    "numpy",
+    "sklearn",
+    "sklearn.base",
+    "sklearn.pipeline",
+    "sklearn.feature_extraction",
+    "sklearn.feature_extraction.text",
+    "sklearn.linear_model",
+    "sklearn.preprocessing",
+    "scipy",
+    "scipy.sparse",
+    "speech_recognition",
+    "soundcard",
+    "google.genai",
+    "google.genai.interactions",
+]
+
+excludes = [
+    "pytest",
+    "_pytest",
+    "google.genai.tests",
+    "google.genai.test_api_client",
+    "google.genai._test_api_client",
+    "sklearn.external.array_api_compat.torch",
+    "pycparser",
+    "pycparser.c_parser",
+    "pycparser.yacc",
+    "pycparser.lextab",
+    "pycparser.yacctab",
+    "tzdata",
+    "scipy.special._cdflib",
+]
 
 a = Analysis(
-    ['spam_detector_desktop.py'],
+    ["spam_detector_desktop.py"],
     pathex=[],
-    binaries=binaries,
+    binaries=[],
     datas=datas,
     hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=excludes,
     noarchive=False,
     optimize=0,
 )
+
 pyz = PYZ(a.pure)
 
 exe = EXE(
@@ -35,17 +72,12 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='SpamMessageCallDetector',
+    name=APP_NAME,
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
-    upx_exclude=[],
-    runtime_tmpdir=None,
+    upx=False,
     console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
 )
