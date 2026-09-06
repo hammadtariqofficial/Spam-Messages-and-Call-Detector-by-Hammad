@@ -1,71 +1,72 @@
-# Spam Message & Call Detector — Industrial Edition
+# Spam Messages and Call Detector — Built by Hammad
 
-This project follows the supplied Project 7 requirements:
+A Windows desktop application for detecting spam/scam messages and analyzing live call transcripts with a deterministic ML + rule-based engine. Optional Gemini agents provide secondary explanations and safety guidance; they never replace the deterministic classification.
+
+## Features
 
 - Normal / Suspicious / Spam classification
-- SMS and call-related text analysis
-- Pattern analysis
-- Suspicious link detection
-- Urgency / pressure detection
-- Repeated promotional language detection
-- Sensitive information / OTP / password detection
-- Optional sender/caller risk context
-- ML classification with TF-IDF + Logistic Regression
-- Explainable reasons
-- Risk score and severity
-- Safety recommendations
-- Scan history and audit database
-- Dashboard and result visualization
-- Exportable results
-- Offline text analysis after installation
-- One-file Windows EXE build using PyInstaller
+- SMS and call-text analysis
+- TF-IDF + Logistic Regression model
+- Explainable rule indicators and risk score
+- Suspicious URL, urgency, financial, credential/OTP and prize-scam detection
+- Optional sender/caller context
+- Local SQLite scan history
+- Result export
+- Consent-based microphone and Windows system-audio loopback analysis
+- Optional Gemini AI agent layer
+- One-file Windows EXE packaging with PyInstaller
 
-## Color palette
-Navy #172033, Blue #3B82F6, Purple #8B5CF6, Orange #F59E0B,
-Red #EF4444, White #FFFFFF.
+## Run from source
 
-## Run
-Use `RUN_SOURCE.bat`.
+Double-click `RUN_SOURCE.bat` or run:
 
-## Build one Windows EXE
-On Windows, double-click `BUILD_ONE_EXE.bat`.
-The output will be:
-`dist\SpamMessageCallDetector.exe`
+```text
+python spam_detector_desktop.py
+```
 
-The EXE is built with `--onefile --windowed`, so the user receives one executable rather than a folder of application files.
+## Configure Gemini
 
-## Important
-The detector is a defensive classifier. A score is an advisory signal, not proof that a message is malicious. Always verify important requests through an official channel.
+The Gemini layer is optional. Never commit an API key.
+
+Use `CONFIGURE_GEMINI.bat` or set `GEMINI_API_KEY` in the environment. The application remains fully usable for local deterministic analysis when Gemini is unavailable.
+
+## Build Windows EXE
+
+On Windows 10/11 x64 with Python 3.11–3.13 installed, run:
+
+```text
+BUILD_ONE_EXE.bat
+```
+
+Output:
+
+```text
+release\Spam Messages and Call Detector.exe
+```
+
+The build uses `SpamMessageCallDetector.spec`. The previous broad `collect_submodules sklearn` and `collect_all google.genai` approach has been removed because it caused optional-module warnings for packages such as `google.genai.tests`, `pytest`, `pycparser`, `tzdata`, and the sklearn torch compatibility layer.
+
+## QA
+
+The current repair was verified in the available Linux environment with:
+
+- Python compilation: PASS
+- Final verification: PASS
+- Smoke tests: PASS
+- Detector regression: 160/160 PASS
+- Edge cases: 20/20 PASS
+- Gemini offline behavior: PASS
+- Tkinter UI smoke test under Xvfb: PASS
+- Hardcoded-secret scan: PASS
+- `shell=True` scan: PASS
+- TODO/FIXME scan: PASS
+
+The final Windows EXE build and real microphone/system-loopback runtime are Windows-only validations and must be tested on the target Windows PC.
+
+## Project owner
+
+**Built by Hammad**
 
 ## Release
-- Version: **1.0.1-INDUSTRIAL-HARDENED**
-- Release focus: ML robustness, reproducible training, explainability, regression testing, Windows deployment hygiene.
 
-## Industrial ML Upgrade
-The project now includes a reproducible ML pipeline under `training/` and an automated test suite under `tests/`.
-
-- `training/build_dataset.py` — reproducibly expands the labelled dataset with curated baseline + synthetic hard-negative examples.
-- `training/train_model.py` — grouped train/validation/test split, word+character TF-IDF, Logistic Regression, metrics and model export.
-- `tests/test_detector_160.py` — 160 end-to-end classification regression tests.
-- `reports/ml_evaluation.json` — machine-readable evaluation metrics.
-- `reports/INDUSTRIAL_ML_UPGRADE_REPORT.md` — audit summary.
-- `docs/MODEL_CARD.md` — model purpose, evaluation, limitations and production validation guidance.
-- `docs/RELEASE_CHECKLIST.md` — release-readiness checklist.
-
-### Re-training
-On the BUILD PC, after changing the dataset:
-`python training/train_model.py`
-
-Then run:
-`python tests/test_detector_160.py`
-
-The Windows EXE build script automatically retrains and runs verification/tests before packaging.
-
-> The current expanded dataset includes synthetic/template-generated examples. Its metrics should be treated as engineering validation, not a claim of production accuracy.
-
-## Hardened release notes
-- Version 1.0.1-INDUSTRIAL-HARDENED.
-- Live Call now fails gracefully when audio/STT dependencies are unavailable.
-- Windows system-audio mode resolves loopback microphone sources instead of recording directly from a speaker object.
-- Export and local history UI paths have stronger error handling and scrolling.
-- The Windows EXE must be built and smoke-tested on Windows; this Linux environment cannot execute a Windows binary.
+**2.1.1 — PyInstaller Warning Fix**
